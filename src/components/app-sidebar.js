@@ -5,6 +5,7 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 export function AppSidebar() {
   return (
@@ -14,6 +15,10 @@ export function AppSidebar() {
         {/* <SidebarGroup /> */}
         <div className="bg-gray-50 h-full w-full">
           <p>logo</p>
+          <div className="flex flex-col">
+            <Link href={'/dashboard'}>Dashboard</Link>
+            <Link href={'/dashboard/my-tasks'}>My tasks</Link>
+          </div>
         </div>
         {/* <SidebarGroup /> */}
       </SidebarContent>

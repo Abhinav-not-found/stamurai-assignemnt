@@ -29,9 +29,9 @@ const Dashboard = () => {
             <AssignedTaskComponent/>
             <MyTaskComponent/>
           </div>
-          <div>
-            {/* <p>overdue tasks</p>
-            <p>overview</p> */}
+          <div className="w-1/3">
+            <p>overdue tasks</p>
+            <p>overview</p>
           </div>
         </div>
       </div>

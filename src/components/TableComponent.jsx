@@ -13,7 +13,8 @@ import { Badge } from "./ui/badge";
 import { Label } from "@/components/ui/label"
 import { SelectNative } from "@/components/ui/select-native"
 
-const TableComponent = () => {
+const TableComponent = ({data}) => {
+  console.log(data)
   return (
     <div>
       <Table>
@@ -28,6 +29,7 @@ const TableComponent = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
+          
           <TableRow>
             <TableCell>Sample</TableCell>
             <TableCell className={"text-muted-foreground"}>

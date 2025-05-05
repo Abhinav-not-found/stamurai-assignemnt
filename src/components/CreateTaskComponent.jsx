@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/select";
 
 import MultipleSelector from "@/components/ui/multiselect";
+import axios from "axios";
+import { toast } from "sonner";
 
 const frameworks = [
   {
@@ -95,17 +97,32 @@ const CreateTaskComponent = () => {
   const [priority,setPriority]=useState('low');
   const [status,setStatus]=useState('pending');
   const [assignedUsers,setAssignedUsers]=useState([]);
+  const [loading, setLoading] = useState(false)
+  const [open, setOpen]=useState(false)
 
-  const handleSaveTask = () =>{
+  const handleSaveTask =  async(e) =>{
+    e.preventDefault();
+    setLoading(true)
+    setOpen(true)
+    const userId = localStorage.getItem('userId')
     try {
-      
+      const res = await axios.post("/api/task/createTask",{
+        title, description, date, priority, status, assignedUsers, userId
+      })
+      if(res.status ==201){
+        console.log(res.data)
+        setOpen(false)
+        toast.success(res.data.message)
+      }
     } catch (error) {
       console.log(error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className='bg-primary text-white'>Create</Button>
       </DialogTrigger>
@@ -114,7 +131,7 @@ const CreateTaskComponent = () => {
           <DialogTitle>Add a Task</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <form className='space-y-4 '>
+        <form onSubmit={handleSaveTask} className='space-y-4 '>
           <div className='space-y-2'>
             <Label htmlFor='title'>Title</Label>
             <Input value={title} onChange={(e)=>setTitle(e.target.value)} id='title' placeholder='Enter task title' />

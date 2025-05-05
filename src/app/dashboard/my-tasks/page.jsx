@@ -4,10 +4,27 @@ import CreateTaskComponent from "@/components/CreateTaskComponent";
 import NotificationComponent from "@/components/NotificationComponent";
 import TableComponent from "@/components/TableComponent";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import axios from "axios";
 import { LayoutGrid, Rows2, TableProperties } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const page = () => {
+  const [allTasks, setAllTasks] = useState('')
+  // console.log(allTasks)
+  useEffect(()=>{
+    const userId = localStorage.getItem('userId')
+    const getAllTasks = async() =>{
+      try {
+        const res = await axios.get(`/api/task/getAllTasks/${userId}`)
+        if(res.status === 200){
+          setAllTasks(res.data.tasks)
+        }
+      } catch (error) {
+        console.log(error.message)
+      }
+    }
+    getAllTasks()
+  },[])
   return (
     <Tabs defaultValue='table' className='w-full'>
       <div className='flex justify-between'>
@@ -32,12 +49,14 @@ const page = () => {
                 <LayoutGrid />
               </TabsTrigger>
             </TabsList>
+
             <CreateTaskComponent />
+
           </div>
         </div>
         <div>
           <TabsContent value='table'>
-            <TableComponent/>
+            <TableComponent data={allTasks}/>
           </TabsContent>
           <TabsContent value='list'>list</TabsContent>
           <TabsContent value='card'>card content</TabsContent>

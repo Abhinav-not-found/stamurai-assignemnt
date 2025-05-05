@@ -1,12 +1,34 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 
 import NotificationComponent from "@/components/NotificationComponent";
 import AvatarComponent from "@/components/AvatarComponent";
 import SmallCard from "@/components/cards/SmallCard";
 import AssignedTaskComponent from "@/components/AssignedTaskComponent";
 import MyTaskComponent from "@/components/MyTaskComponent";
+import axios from "axios";
 
 const Dashboard = () => {
+
+  const [userId, setUserId] = useState(null);
+
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await axios.post("/api/profile");
+        const id = res.data.data._id;
+        setUserId(id);
+        localStorage.setItem("userId", id);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error.message);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+
   return (
     <div className='w-full'>
       <div className='flex justify-between'>

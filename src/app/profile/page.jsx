@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 const Profile = () => {
   const router = useRouter();
   const [data, setData] = useState("");
+  console.log(data)
 
   const getUserDetails = async () => {
     try {
@@ -25,6 +26,7 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await axios.get("/api/logout");
+      localStorage.clear()
       router.push("/login");
     } catch (error) {
       console.log(error.message);

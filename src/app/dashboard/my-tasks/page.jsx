@@ -10,10 +10,8 @@ import React, { useEffect, useState } from "react";
 
 const page = () => {
   const [allTasks, setAllTasks] = useState('')
-  // console.log(allTasks)
-  useEffect(()=>{
+  const getAllTasks = async() =>{
     const userId = localStorage.getItem('userId')
-    const getAllTasks = async() =>{
       try {
         const res = await axios.get(`/api/task/getAllTasks/${userId}`)
         if(res.status === 200){
@@ -23,6 +21,7 @@ const page = () => {
         console.log(error.message)
       }
     }
+  useEffect(()=>{
     getAllTasks()
   },[])
   return (
@@ -50,7 +49,7 @@ const page = () => {
               </TabsTrigger>
             </TabsList>
 
-            <CreateTaskComponent />
+            <CreateTaskComponent onTaskCreated={getAllTasks} />
 
           </div>
         </div>

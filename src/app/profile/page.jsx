@@ -23,23 +23,11 @@ const Profile = () => {
     getUserDetails()
   },[])
 
-  const handleLogout = async () => {
-    try {
-      await axios.get("/api/logout");
-      localStorage.clear()
-      router.push("/login");
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   return (
     <div>
       <div className='flex justify-between items-center'>
         <h1>Profile page</h1>
-        <button onClick={handleLogout} className='py-1 px-4 border border-black rounded-md cursor-pointer mt-4 disabled:text-gray-300 disabled:border-gray-300'>
-          Logout
-        </button>
       </div>
     </div>
   );

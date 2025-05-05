@@ -90,7 +90,7 @@ const frameworks = [
   },
 ];
 
-const CreateTaskComponent = () => {
+const CreateTaskComponent = ({onTaskCreated}) => {
   const [title,setTitle]=useState('');
   const [description,setDescription]=useState('');
   const [date,setDate]=useState('');
@@ -110,9 +110,12 @@ const CreateTaskComponent = () => {
         title, description, date, priority, status, assignedUsers, userId
       })
       if(res.status ==201){
-        console.log(res.data)
+        // console.log(res.data)
         setOpen(false)
         toast.success(res.data.message)
+        if (typeof onTaskCreated === "function") {
+          onTaskCreated();
+        }
       }
     } catch (error) {
       console.log(error.message)

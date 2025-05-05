@@ -19,7 +19,7 @@ const Login = () => {
     try {
       const res = await axios.post("/api/login", user);
       console.log(res.data);
-      router.push("/profile");
+      router.push("/dashboard");
     } catch (error) {
       console.log(error.message);
       toast.error(error.message);

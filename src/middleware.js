@@ -5,7 +5,7 @@ export function middleware (req){
   const isPublicPath = path === '/login' || path === '/register' || path ===  '/'
   const token = req.cookies.get('token')?.value || ''
   if(isPublicPath && token){
-    return NextResponse.redirect(new  URL('/profile', req.url))
+    return NextResponse.redirect(new  URL('/dashboard', req.url))
   }
   if(!isPublicPath && !token){
     return NextResponse.redirect(new  URL('/login', req.url))
@@ -17,5 +17,6 @@ export const config ={
     '/login',
     '/register',
     '/profile',
+    '/dashboard'
   ],
 }

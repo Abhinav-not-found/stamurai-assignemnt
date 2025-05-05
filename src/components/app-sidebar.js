@@ -14,7 +14,7 @@ export function AppSidebar() {
       <SidebarContent>
         {/* <SidebarGroup /> */}
         <div className="bg-gray-50 h-full w-full">
-          <p>logo</p>
+          <p>Task Manager</p>
           <div className="flex flex-col">
             <Link href={'/dashboard'}>Dashboard</Link>
             <Link href={'/dashboard/my-tasks'}>My tasks</Link>

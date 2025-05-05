@@ -55,7 +55,7 @@ const page = () => {
         </div>
         <div>
           <TabsContent value='table'>
-            <TableComponent data={allTasks}/>
+            <TableComponent onTaskDelete={getAllTasks} data={allTasks}/>
           </TabsContent>
           <TabsContent value='list'>list</TabsContent>
           <TabsContent value='card'>card content</TabsContent>

@@ -1,26 +1,69 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { SquarePen, Trash } from "lucide-react";
 import { Badge } from "./ui/badge";
-import { Label } from "@/components/ui/label";
 import { SelectNative } from "@/components/ui/select-native";
+import axios from "axios";
+import { toast } from "sonner";
 
-const TableComponent = ({ data }) => {
-  // console.log(data);
+const TableComponent = ({ data, onTaskDelete, onTaskUpdate }) => {
+  const [editingTask, setEditingTask] = useState(null);
+  const [updatedTitle, setUpdatedTitle] = useState("");
+  const [updatedDescription, setUpdatedDescription] = useState("");
+  const [updatedPriority, setUpdatedPriority] = useState("low");
+  const [updatedDate, setUpdatedDate] = useState("");
+
   const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return new Date(dateString)
-    .toLocaleDateString('en-US', options)
-    .replace(',', '');
-};
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-US", options).replace(",", "");
+  };
+
+  const handleDeleteTask = async (id) => {
+    try {
+      const res = await axios.delete(`/api/task/deleteTask/${id}`);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        onTaskDelete();
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const startEditing = (task) => {
+    setEditingTask(task._id);
+    setUpdatedTitle(task.title);
+    setUpdatedDescription(task.description);
+    setUpdatedPriority(task.priority);
+    setUpdatedDate(task.date?.slice(0, 10)); // Format for <input type="date">
+  };
+
+  const handleUpdateTask = async () => {
+    try {
+      const res = await axios.put(`/api/task/updateTask/${editingTask}`, {
+        title: updatedTitle,
+        description: updatedDescription,
+        priority: updatedPriority,
+        date: updatedDate,
+      });
+
+      if (res.status === 200) {
+        toast.success("Task updated");
+        setEditingTask(null);
+        onTaskUpdate();
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update task");
+    }
+  };
 
   return (
     <div>
@@ -36,25 +79,66 @@ const TableComponent = ({ data }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.isArray(data) ? (
+          {Array.isArray(data) && data.length > 0 ? (
             data.map((task) => (
               <TableRow key={task._id}>
-                <TableCell>{task.title || "Sample"}</TableCell>
-                <TableCell className={"text-muted-foreground"}>
-                  {task.description || "This is a sample desc"}
+                <TableCell>
+                  {editingTask === task._id ? (
+                    <input
+                      value={updatedTitle}
+                      onChange={(e) => setUpdatedTitle(e.target.value)}
+                      className='border px-2 py-1 rounded'
+                    />
+                  ) : (
+                    task.title || "Sample"
+                  )}
                 </TableCell>
-                <TableCell>{formatDate(task.date) || "January 1, 2024"}</TableCell>
-                <TableCell className={'capitalize'}>
-                  {task.priority ==='low' ? 
-                  
-                  <Badge className={'bg-green-600'}>{task.priority || "High"}</Badge>
-                  :
-                  task.priority ==='medium' ? 
-                  <Badge className={'bg-yellow-500'}>{task.priority || "High"}</Badge>
-                  :
-                  <Badge className={'bg-red-600'}>{task.priority || "High"}</Badge>
-                }
+
+                <TableCell className='text-muted-foreground'>
+                  {editingTask === task._id ? (
+                    <textarea
+                      value={updatedDescription}
+                      onChange={(e) => setUpdatedDescription(e.target.value)}
+                      className='border px-2 py-1 rounded'
+                    />
+                  ) : (
+                    task.description || "This is a sample desc"
+                  )}
                 </TableCell>
+
+                <TableCell>
+                  {editingTask === task._id ? (
+                    <input
+                      type='date'
+                      value={updatedDate}
+                      onChange={(e) => setUpdatedDate(e.target.value)}
+                      className='border px-2 py-1 rounded'
+                    />
+                  ) : (
+                    formatDate(task.date) || "Jan 1, 2024"
+                  )}
+                </TableCell>
+
+                <TableCell className={"capitalize"}>
+                  {editingTask === task._id ? (
+                    <select
+                      value={updatedPriority}
+                      onChange={(e) => setUpdatedPriority(e.target.value)}
+                      className='border px-2 py-1 rounded'
+                    >
+                      <option value='low'>Low</option>
+                      <option value='medium'>Medium</option>
+                      <option value='high'>High</option>
+                    </select>
+                  ) : task.priority === "low" ? (
+                    <Badge className={"bg-green-600"}>{task.priority}</Badge>
+                  ) : task.priority === "medium" ? (
+                    <Badge className={"bg-yellow-500"}>{task.priority}</Badge>
+                  ) : (
+                    <Badge className={"bg-red-600"}>{task.priority}</Badge>
+                  )}
+                </TableCell>
+
                 <TableCell>
                   <div className='w-fit'>
                     <SelectNative defaultValue={task.status}>
@@ -64,13 +148,36 @@ const TableComponent = ({ data }) => {
                     </SelectNative>
                   </div>
                 </TableCell>
-                <TableCell className={"flex h-full gap-4 justify-start"}>
-                  <button className='mt-3'>
-                    <SquarePen className='w-4 h-4 cursor-pointer' />
-                  </button>
-                  <button className='mt-3'>
-                    <Trash className='w-4 h-4 cursor-pointer' />
-                  </button>
+
+                <TableCell className='flex gap-4 justify-start'>
+                  {editingTask === task._id ? (
+                    <>
+                      <button
+                        onClick={handleUpdateTask}
+                        className='mt-3 text-green-500'
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={() => setEditingTask(null)}
+                        className='mt-3 text-red-500'
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className='mt-3 cursor-pointer' onClick={() => startEditing(task)}>
+                        <SquarePen className='w-4 h-4' />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTask(task._id)}
+                        className='mt-3 cursor-pointer'
+                      >
+                        <Trash className='w-4 h-4' />
+                      </button>
+                    </>
+                  )}
                 </TableCell>
               </TableRow>
             ))

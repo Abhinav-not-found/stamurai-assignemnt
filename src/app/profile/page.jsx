@@ -11,7 +11,7 @@ const Profile = () => {
 
   const getUserDetails = async () => {
     try {
-      const res = await axios.post("/api/profile");
+      const res = await axios.post("/api/user/profile");
       // console.log(res.data.data._id);
       setData(res.data.data._id);
     } catch (error) {

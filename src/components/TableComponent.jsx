@@ -42,7 +42,7 @@ const TableComponent = ({ data, onTaskDelete, onTaskUpdate }) => {
     setUpdatedTitle(task.title);
     setUpdatedDescription(task.description);
     setUpdatedPriority(task.priority);
-    setUpdatedDate(task.date?.slice(0, 10)); // Format for <input type="date">
+    setUpdatedDate(task.date?.slice(0, 10)); 
   };
 
   const handleUpdateTask = async () => {
@@ -82,7 +82,7 @@ const TableComponent = ({ data, onTaskDelete, onTaskUpdate }) => {
           {Array.isArray(data) && data.length > 0 ? (
             data.map((task) => (
               <TableRow key={task._id}>
-                <TableCell>
+                <TableCell className={'first-letter:uppercase'}>
                   {editingTask === task._id ? (
                     <input
                       value={updatedTitle}
@@ -94,7 +94,7 @@ const TableComponent = ({ data, onTaskDelete, onTaskUpdate }) => {
                   )}
                 </TableCell>
 
-                <TableCell className='text-muted-foreground'>
+                <TableCell className='text-muted-foreground first-letter:uppercase'>
                   {editingTask === task._id ? (
                     <textarea
                       value={updatedDescription}

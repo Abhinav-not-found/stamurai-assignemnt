@@ -10,11 +10,11 @@ import { LogOut } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-const AvatarComponent = () => {
+const AvatarComponent = ({name}) => {
   const router = useRouter();
   const handleLogout = async () => {
     try {
-      await axios.get("/api/logout");
+      await axios.get("/api/user/logout");
       localStorage.clear()
       router.push("/login");
     } catch (error) {
@@ -27,7 +27,7 @@ const AvatarComponent = () => {
       <DropdownMenuTrigger>
         <Avatar className={"cursor-pointer"}>
           <AvatarImage src='' alt='Kelly King' />
-          <AvatarFallback>KK</AvatarFallback>
+          <AvatarFallback>{name?.slice(0,1).toUpperCase()}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

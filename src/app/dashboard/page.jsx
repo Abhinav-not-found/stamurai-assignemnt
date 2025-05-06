@@ -10,15 +10,18 @@ import axios from "axios";
 
 const Dashboard = () => {
 
-  const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
 
+  console.log(username)
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const res = await axios.post("/api/profile");
         const id = res.data.data._id;
-        setUserId(id);
+        const name = res.data.data.name;
+        // console.log(res.data)
+        setUsername(name);
         localStorage.setItem("userId", id);
       } catch (error) {
         console.error("Failed to fetch user data:", error.message);
@@ -32,10 +35,10 @@ const Dashboard = () => {
   return (
     <div className='w-full'>
       <div className='flex justify-between'>
-        <h1 className='text-2xl font-semibold mt-2'>Welcome kk</h1>
+        <h1 className='text-2xl font-semibold mt-2'>Welcome {username}</h1>
         <div className='flex items-center gap-4'>
           <NotificationComponent />
-          <AvatarComponent />
+          <AvatarComponent name={username} />
         </div>
       </div>
       <div className='bg-gray-100 rounded-xl w-full h-full mt-2 p-4'>

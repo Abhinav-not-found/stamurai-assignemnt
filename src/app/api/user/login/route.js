@@ -7,8 +7,9 @@ import jwt from 'jsonwebtoken'
 connect()
 export async function POST(req) {
   try {
+    
     const reqBody = await req.json()
-    const {email,password} = reqBody
+    const {email, password} = reqBody
 
     const user = await User.findOne({email})
     if(!user){
@@ -21,7 +22,7 @@ export async function POST(req) {
     }
 
 
-    const token = jwt.sign({id:user._id},process.env.TOKEN_SECRET,{expiresIn:'1h'})
+    const token = jwt.sign({ id:user._id, name:user.name }, process.env.TOKEN_SECRET, {expiresIn:'1h'})
 
     const response = NextResponse.json({
       message:'Login success',
@@ -34,6 +35,7 @@ export async function POST(req) {
     return response
 
   } catch (error) {
+    console.log(error)
     return NextResponse.json({error:error.message},{status:500})
   }
 }

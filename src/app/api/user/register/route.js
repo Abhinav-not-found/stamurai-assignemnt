@@ -8,7 +8,8 @@ connect()
 export async function POST( req ){
   try {
     const reqBody = await req.json()
-    const { email, password } = reqBody
+    const { email, password, name } = reqBody
+    console.log(name)
     
     const user = await User.findOne({email})
     if(user){
@@ -22,7 +23,7 @@ export async function POST( req ){
 
 
     const newUser = new User({
-      email, password:hashedPassword
+      email, password:hashedPassword, name
     })
     
     const savedUser = await newUser.save()

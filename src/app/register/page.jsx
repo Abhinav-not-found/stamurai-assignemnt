@@ -5,60 +5,97 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+
 const Register = () => {
   const router = useRouter()
   const [user, setUser] = useState({
-    email:'',
-    password:'',
+    name: '',
+    email: '',
+    password: '',
   })
-  const [loading, setLoading ] = useState(false)
-  const [disabled, setDisabled ] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [disabled, setDisabled] = useState(true)
 
-  const handleRegister = async() =>{
+  const handleRegister = async () => {
     setLoading(true)
     try {
-      const res = await axios.post('/api/register',user)
+      const res = await axios.post('/api/user/register', user)
       console.log(res.data)
       router.push('/login')
-
     } catch (error) {
       console.log(error.message)
-      toast.error(error.message)
-    } finally{
+      toast.error(error.message || "Registration failed")
+    } finally {
       setLoading(false)
     }
   }
 
-  useEffect(()=>{
-    if(user.email.length > 0 && user.password.length > 0 ){
-        setDisabled(false)
-    }
-    else setDisabled(true)
-  },[user])
+  useEffect(() => {
+    setDisabled(!(user.name && user.email && user.password))
+  }, [user])
 
   return (
-    <div>
-      <h1 className='text-3xl mb-2'>Register</h1>
-      <label htmlFor="email" className='text-xl'>Email:</label>
-      <br />
-      <input type="text"
-        id='email'
-        value={user.email}
-        onChange={(e)=>setUser({...user, email:e.target.value})}
-        className='border border-black rounded-md p-1'
-      />
-      <br />
-      <label htmlFor="password" className='text-xl'>Password:</label>
-      <br />
-      <input type="password"
-        id='password'
-        value={user.password}
-        onChange={(e)=>setUser({...user, password:e.target.value})}
-        className='border border-black rounded-md p-1'
-      />
-      <br />
-      <button onClick={handleRegister} disabled={disabled} className='py-1 px-4 border border-black rounded-md cursor-pointer mt-4 disabled:text-gray-300 disabled:border-gray-300' >{loading? 'Loading...' : 'Register'}</button>
-      <p>Already have an account? <Link href={'/login'} className='underline'>Login</Link> here</p>
+    <div className='min-h-screen flex items-center justify-center bg-gray-100 px-4'>
+      <Card className='w-full max-w-md shadow-xl'>
+        <CardHeader>
+          <CardTitle className='text-2xl text-center'>Register</CardTitle>
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div>
+            <Label htmlFor='name'>Name</Label>
+            <Input
+              id='name'
+              type='text'
+              value={user.name}
+              onChange={(e) => setUser({ ...user, name: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor='email'>Email</Label>
+            <Input
+              id='email'
+              type='email'
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor='password'>Password</Label>
+            <Input
+              id='password'
+              type='password'
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+            />
+          </div>
+
+          <Button
+            className='w-full'
+            onClick={handleRegister}
+            disabled={disabled || loading}
+          >
+            {loading ? "Registering..." : "Register"}
+          </Button>
+
+          <p className='text-sm text-center text-muted-foreground'>
+            Already have an account?{" "}
+            <Link href='/login' className='underline hover:text-blue-600'>
+              Login 
+            </Link> here
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

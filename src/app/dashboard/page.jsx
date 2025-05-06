@@ -1,23 +1,21 @@
 'use client'
 import React, { useEffect, useState } from "react";
-
-import NotificationComponent from "@/components/NotificationComponent";
-import AvatarComponent from "@/components/AvatarComponent";
 import SmallCard from "@/components/cards/SmallCard";
 import AssignedTaskComponent from "@/components/AssignedTaskComponent";
 import MyTaskComponent from "@/components/MyTaskComponent";
 import axios from "axios";
+import TopBar from "@/components/TopBar";
 
 const Dashboard = () => {
 
   const [username, setUsername] = useState(null);
 
-  console.log(username)
+  // console.log(username)
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.post("/api/profile");
+        const res = await axios.post("/api/user/profile");
         const id = res.data.data._id;
         const name = res.data.data.name;
         // console.log(res.data)
@@ -34,13 +32,7 @@ const Dashboard = () => {
 
   return (
     <div className='w-full'>
-      <div className='flex justify-between'>
-        <h1 className='text-2xl font-semibold mt-2'>Welcome {username}</h1>
-        <div className='flex items-center gap-4'>
-          <NotificationComponent />
-          <AvatarComponent name={username} />
-        </div>
-      </div>
+      <TopBar username={username} />
       <div className='bg-gray-100 rounded-xl w-full h-full mt-2 p-4'>
         <p className='text-2xl font-semibold'>Dashboard</p>
         {/* <div className="flex gap-4 mt-2">
